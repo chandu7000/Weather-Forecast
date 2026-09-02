@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useLayoutEffect, useRef } from "react";
 import Navbar from "./components/navbar";
 import MainWeatherCard from "./components/mainweathercard";
 import FiveDayForecast from "./components/fiveday";
@@ -6,6 +6,7 @@ import TodayHighlights from "./components/todayhighlights";
 import "./index.css";
 
 const API_BASE_URL = "https://api.openweathermap.org/data/2.5";
+const GEO_API_URL = "https://api.openweathermap.org/geo/1.0/direct";
 
 const getWeatherTheme = (weatherData) => {
   const condition = weatherData?.weather?.[0]?.main?.toLowerCase() || "default";
@@ -37,8 +38,43 @@ const WeatherDashboard = () => {
   const [locationLoading, setLocationLoading] = useState(false);
   const [error, setError] = useState("");
   const [lastRequest, setLastRequest] = useState({ type: "city", value: "Andhra Pradesh" });
+  const leftColumnRef = useRef(null);
+  const [desktopColumnHeight, setDesktopColumnHeight] = useState(null);
 
   const API_KEY = import.meta.env.VITE_API_KEY;
+
+  useEffect(() => {
+    if (!error) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setError("");
+    }, 5000);
+
+    return () => window.clearTimeout(timer);
+  }, [error]);
+
+  useLayoutEffect(() => {
+    const leftColumn = leftColumnRef.current;
+    if (!leftColumn) return undefined;
+
+    const syncColumnHeight = () => {
+      if (window.innerWidth >= 1121) {
+        setDesktopColumnHeight(Math.ceil(leftColumn.getBoundingClientRect().height));
+      } else {
+        setDesktopColumnHeight(null);
+      }
+    };
+
+    syncColumnHeight();
+    const observer = new ResizeObserver(syncColumnHeight);
+    observer.observe(leftColumn);
+    window.addEventListener("resize", syncColumnHeight);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", syncColumnHeight);
+    };
+  }, [weatherData, fiveDayForecast]);
 
   const fetchJson = async (url) => {
     const response = await fetch(url);
@@ -83,16 +119,16 @@ const WeatherDashboard = () => {
     }
   };
 
-  const fetchWeatherByCoordinates = async (lat, lon) => {
+  const fetchWeatherByCoordinates = async (lat, lon, source = "location") => {
     if (!API_KEY) {
       setError("Missing VITE_API_KEY. Add your OpenWeather key to the project .env file.");
       return;
     }
 
     setLoading(true);
-    setLocationLoading(true);
+    if (source === "location") setLocationLoading(true);
     setError("");
-    setLastRequest({ type: "coords", value: { lat, lon } });
+    setLastRequest({ type: "coords", value: { lat, lon, source } });
 
     try {
       const weather = await fetchJson(
@@ -105,7 +141,7 @@ const WeatherDashboard = () => {
       setError(fetchError.message || "Unable to load weather for your current location.");
     } finally {
       setLoading(false);
-      setLocationLoading(false);
+      if (source === "location") setLocationLoading(false);
     }
   };
 
@@ -126,7 +162,7 @@ const WeatherDashboard = () => {
 
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
-        fetchWeatherByCoordinates(coords.latitude, coords.longitude);
+        fetchWeatherByCoordinates(coords.latitude, coords.longitude, "location");
       },
       (geoError) => {
         setLocationLoading(false);
@@ -144,9 +180,52 @@ const WeatherDashboard = () => {
     );
   };
 
+  const fetchCitySuggestions = async (query) => {
+    if (!API_KEY || query.trim().length < 2) return [];
+
+    try {
+      const response = await fetch(
+        `${GEO_API_URL}?q=${encodeURIComponent(query.trim())}&limit=5&appid=${API_KEY}`
+      );
+
+      if (!response.ok) return [];
+      const places = await response.json();
+      const seen = new Set();
+
+      return places
+        .map((place) => {
+          const parts = [place.name, place.state, place.country].filter(Boolean);
+          const label = parts.join(", ");
+          const detail = [place.state, place.country].filter(Boolean).join(", ");
+          return {
+            name: place.name,
+            state: place.state || "",
+            country: place.country || "",
+            lat: place.lat,
+            lon: place.lon,
+            label,
+            detail,
+          };
+        })
+        .filter((place) => {
+          const key = `${place.name}|${place.state}|${place.country}|${place.lat.toFixed(3)}|${place.lon.toFixed(3)}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+    } catch (suggestionError) {
+      console.error("Error fetching city suggestions:", suggestionError);
+      return [];
+    }
+  };
+
+  const handleSuggestionSelect = (suggestion) => {
+    fetchWeatherByCoordinates(suggestion.lat, suggestion.lon, "suggestion");
+  };
+
   const retryLastRequest = () => {
     if (lastRequest.type === "coords") {
-      fetchWeatherByCoordinates(lastRequest.value.lat, lastRequest.value.lon);
+      fetchWeatherByCoordinates(lastRequest.value.lat, lastRequest.value.lon, lastRequest.value.source || "retry");
     } else {
       fetchWeatherByCity(lastRequest.value);
     }
@@ -163,6 +242,8 @@ const WeatherDashboard = () => {
         <Navbar
           onSearch={fetchWeatherByCity}
           onCurrentLocation={handleCurrentLocation}
+          onGetSuggestions={fetchCitySuggestions}
+          onSelectSuggestion={handleSuggestionSelect}
           locationLoading={locationLoading}
         />
 
@@ -189,17 +270,22 @@ const WeatherDashboard = () => {
         ) : (
           weatherData && (
             <section className="dashboard-grid">
-              <div className="left-column">
+              <div className="left-column" ref={leftColumnRef}>
                 <MainWeatherCard weatherData={weatherData} />
                 {fiveDayForecast && <FiveDayForecast forecastData={fiveDayForecast} />}
               </div>
 
               {airQualityData && (
-                <TodayHighlights
-                  weatherData={weatherData}
-                  airQualityData={airQualityData}
-                  forecastData={fiveDayForecast}
-                />
+                <div
+                  className="highlights-slot"
+                  style={desktopColumnHeight ? { height: `${desktopColumnHeight}px` } : undefined}
+                >
+                  <TodayHighlights
+                    weatherData={weatherData}
+                    airQualityData={airQualityData}
+                    forecastData={fiveDayForecast}
+                  />
+                </div>
               )}
             </section>
           )

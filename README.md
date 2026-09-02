@@ -24,3 +24,6 @@ A responsive React + Vite weather dashboard powered by OpenWeather.
    `npm run dev`
 
 Current-location access works on `localhost` during development and requires HTTPS when deployed. The browser will ask the user for location permission.
+
+## Search assistance
+Typing at least two letters in the city search displays up to five OpenWeather geocoding suggestions with city, state/region, and country. Selecting a suggestion loads weather using its exact coordinates. Error banners automatically dismiss after 5 seconds.

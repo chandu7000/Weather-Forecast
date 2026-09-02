@@ -102,9 +102,10 @@ button { cursor: pointer; }
 .brand-name { font-weight: 800; font-size: 19px; letter-spacing: -0.03em; }
 .brand-subtitle { margin-top: 6px; color: var(--muted); font-size: 11px; font-weight: 600; }
 
-.search-form { display: flex; align-items: center; gap: 10px; width: 100%; }
+.search-form { display: flex; align-items: center; gap: 10px; width: 100%; position: relative; z-index: 20; }
+.search-input-wrap { position: relative; min-width: 0; flex: 1; }
 .search-box {
-  min-width: 0; flex: 1; height: 48px; display: flex; align-items: center; gap: 10px;
+  min-width: 0; width: 100%; height: 48px; display: flex; align-items: center; gap: 10px;
   padding: 0 16px; border-radius: 15px; background: rgba(7, 15, 29, .55);
   border: 1px solid var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
   transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
@@ -114,6 +115,72 @@ button { cursor: pointer; }
 .search-box input { width: 100%; border: 0; outline: 0; color: var(--text); background: transparent; font-size: 13px; font-weight: 600; }
 .search-box input::placeholder { color: #76849c; opacity: 1; }
 .search-box input::-webkit-search-cancel-button { filter: invert(1); opacity: .5; }
+.city-suggestions {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 80;
+  overflow: hidden;
+  padding: 7px;
+  border-radius: 15px;
+  background: rgba(9, 18, 34, .98);
+  border: 1px solid rgba(145, 183, 217, .20);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, .42), inset 0 1px 0 rgba(255, 255, 255, .04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.city-suggestion {
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 11px;
+  border: 0;
+  border-radius: 11px;
+  color: var(--text);
+  background: transparent;
+  text-align: left;
+  transition: background .16s ease, transform .16s ease;
+}
+.city-suggestion:hover, .city-suggestion.is-active {
+  background: rgba(101, 182, 255, .11);
+}
+.suggestion-icon {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.suggestion-icon svg { font-size: 18px; }
+.suggestion-copy { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.suggestion-copy strong {
+  overflow: hidden;
+  color: #eef7ff;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.suggestion-copy small {
+  overflow: hidden;
+  color: #7f90a8;
+  font-size: 9px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.suggestion-state {
+  padding: 14px 12px;
+  color: #8292aa;
+  font-size: 10px;
+  font-weight: 700;
+}
 .search-button {
   height: 48px; padding: 0 20px; border: 0; border-radius: 15px; color: #06111e;
   background: linear-gradient(135deg, #dff2ff, var(--accent)); font-weight: 800; font-size: 12px;
@@ -189,7 +256,7 @@ button { cursor: pointer; }
 .forecast-condition span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .forecast-temp { text-align: right; font-size: 16px; font-weight: 800; }
 
-.highlights-panel { min-height: 100%; padding: 28px; border-radius: 26px; }
+.highlights-panel { min-height: calc(100% + 22px); padding: 28px; border-radius: 26px; }
 .highlights-heading { align-items: center; }
 .wind-chip { display: flex; align-items: center; gap: 7px; padding: 9px 12px; color: #b8c7d7; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.06); border-radius: 12px; font-size: 9px; font-weight: 800; }
 .wind-chip svg { color: var(--accent); font-size: 17px; }
@@ -252,6 +319,7 @@ button { cursor: pointer; }
 .footer-dot { color: var(--accent); }
 
 @media (max-width: 1120px) {
+  .highlights-panel { min-height: auto; }
   .app-shell { width: min(100% - 32px, 1000px); }
   .topbar { grid-template-columns: 1fr 1.6fr auto; }
   .dashboard-grid { grid-template-columns: minmax(300px, .78fr) minmax(0, 1.4fr); }
@@ -371,6 +439,7 @@ button { cursor: pointer; }
 .forecast-temp-stack span { color: #77879d; font-size: 10px; font-weight: 700; }
 
 @media (max-width: 1120px) {
+  .highlights-panel { min-height: auto; }
   .featured-highlights { grid-template-columns: 1fr; }
   .air-values-expanded { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .highlight-grid-expanded { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -536,6 +605,7 @@ button { cursor: pointer; }
 }
 
 @media (max-width: 1120px) {
+  .highlights-panel { min-height: auto; }
   .highlights-panel {
     padding: 25px;
   }
@@ -570,5 +640,57 @@ button { cursor: pointer; }
   }
   .highlight-value {
     margin-top: 12px;
+  }
+}
+
+/* ---------- Exact Desktop Column Bottom Alignment ---------- */
+/* On desktop, let CSS Grid make both dashboard columns share the same row
+   height. The left column (Current Weather + Forecast) determines the row
+   height, and Today's Highlights stretches to that exact same bottom edge. */
+@media (min-width: 1121px) {
+  .dashboard-grid {
+    align-items: stretch;
+  }
+
+  .left-column {
+    align-self: stretch;
+  }
+
+  .highlights-panel {
+    height: auto;
+    min-height: 100%;
+    align-self: stretch;
+  }
+}
+
+
+/* ---------- Pixel-Exact Desktop Column Alignment ---------- */
+/* The wrapper height is synchronized to the measured left column in App.jsx.
+   This avoids font/rendering/sub-pixel differences between the two cards. */
+.highlights-slot {
+  min-width: 0;
+}
+
+.highlights-slot > .highlights-panel {
+  width: 100%;
+}
+
+@media (min-width: 1121px) {
+  .highlights-slot {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .highlights-slot > .highlights-panel {
+    height: 100%;
+    min-height: 0;
+    align-self: auto;
+  }
+}
+
+@media (max-width: 1120px) {
+  .highlights-slot,
+  .highlights-slot > .highlights-panel {
+    height: auto !important;
   }
 }
