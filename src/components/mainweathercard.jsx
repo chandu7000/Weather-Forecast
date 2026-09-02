@@ -6,11 +6,12 @@ const getWindDirection = (degrees = 0) => {
   return directions[Math.round(degrees / 45) % 8];
 };
 
-const MainWeatherCard = ({ weatherData }) => {
+const MainWeatherCard = ({ weatherData, locationDetails }) => {
   const temperatureCelsius = weatherData?.main?.temp;
   const weatherDescription = weatherData?.weather?.[0]?.description || "Weather unavailable";
-  const cityName = weatherData?.name || "City unavailable";
-  const countryName = weatherData?.sys?.country || "";
+  const cityName = locationDetails?.name || weatherData?.name || "City unavailable";
+  const stateName = locationDetails?.state || "";
+  const countryName = locationDetails?.country || weatherData?.sys?.country || "";
   const timestamp = weatherData?.dt;
   const iconCode = weatherData?.weather?.[0]?.icon;
   const windDirection = getWindDirection(weatherData?.wind?.deg);
@@ -58,7 +59,7 @@ const MainWeatherCard = ({ weatherData }) => {
         </div>
         <div className="meta-row location-row">
           <LocationOnRoundedIcon />
-          <span>{cityName}{countryName ? `, ${countryName}` : ""}</span>
+          <span>{[cityName, stateName, countryName].filter(Boolean).join(", ")}</span>
         </div>
       </div>
 

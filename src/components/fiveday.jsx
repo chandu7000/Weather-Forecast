@@ -19,7 +19,7 @@ const getDailyForecasts = (list = []) => {
   return Array.from(byDate.values()).slice(0, 5).map(({ item }) => item);
 };
 
-const FiveDayForecast = ({ forecastData }) => {
+const FiveDayForecast = ({ forecastData, locationDetails }) => {
   const dailyForecasts = getDailyForecasts(forecastData?.list);
 
   const formatDay = (dateString, index) => {
@@ -40,7 +40,7 @@ const FiveDayForecast = ({ forecastData }) => {
           <span className="section-kicker">Next Days</span>
           <h2>5-Day Forecast</h2>
         </div>
-        <span className="forecast-location">{forecastData?.city?.name}</span>
+        <span className="forecast-location">{[locationDetails?.name || forecastData?.city?.name, locationDetails?.state].filter(Boolean).join(", ")}</span>
       </div>
 
       <div className="forecast-list">

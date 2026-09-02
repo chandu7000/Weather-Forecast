@@ -18,7 +18,7 @@ const getWindDirection = (degrees = 0) => {
   return directions[Math.round(degrees / 45) % 8];
 };
 
-const TodayHighlights = ({ weatherData, airQualityData, forecastData }) => {
+const TodayHighlights = ({ weatherData, airQualityData, forecastData, style }) => {
   const { main, wind, visibility, sys, clouds } = weatherData;
   const airQualityIndex = airQualityData?.main?.aqi;
   const { co, no, no2, o3, so2, pm2_5, pm10, nh3 } = airQualityData?.components || {};
@@ -138,7 +138,7 @@ const TodayHighlights = ({ weatherData, airQualityData, forecastData }) => {
   ];
 
   return (
-    <section className="highlights-panel glass-card">
+    <section className="highlights-panel glass-card" style={style}>
       <div className="section-heading-row highlights-heading">
         <div>
           <span className="section-kicker">Conditions</span>

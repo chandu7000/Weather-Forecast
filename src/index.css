@@ -664,33 +664,16 @@ button { cursor: pointer; }
 }
 
 
-/* ---------- Pixel-Exact Desktop Column Alignment ---------- */
-/* The wrapper height is synchronized to the measured left column in App.jsx.
-   This avoids font/rendering/sub-pixel differences between the two cards. */
-.highlights-slot {
-  min-width: 0;
-}
 
-.highlights-slot > .highlights-panel {
-  width: 100%;
-}
-
+/* ---------- Pixel-Exact Visible Panel Alignment ---------- */
+/* App.jsx measures the rendered left column and applies that exact fractional
+   pixel height directly to the visible Highlights panel on desktop. */
 @media (min-width: 1121px) {
-  .highlights-slot {
-    height: 100%;
-    min-height: 0;
-  }
-
-  .highlights-slot > .highlights-panel {
-    height: 100%;
-    min-height: 0;
-    align-self: auto;
-  }
+  .dashboard-grid { align-items: start; }
+  .left-column { align-self: start; }
+  .highlights-panel { min-height: 0; align-self: start; }
 }
 
 @media (max-width: 1120px) {
-  .highlights-slot,
-  .highlights-slot > .highlights-panel {
-    height: auto !important;
-  }
+  .highlights-panel { height: auto !important; min-height: auto; }
 }
