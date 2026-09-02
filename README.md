@@ -1,12 +1,26 @@
-# React + Vite
+# Weather Forecast Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive React + Vite weather dashboard powered by OpenWeather.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Search weather by city
+- Live current-location weather using browser geolocation
+- Current temperature, conditions, high/low, wind and location
+- 5-day forecast with precipitation probability
+- Air-quality index and pollutant readings
+- Sunrise and sunset
+- Humidity, pressure, visibility, feels-like temperature, cloud cover and wind details
+- Dynamic weather themes and responsive layout
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Install dependencies:
+   `npm install`
+2. Create a `.env` file in the project root.
+3. Add your OpenWeather key:
+   `VITE_API_KEY=YOUR_OPENWEATHER_API_KEY`
+4. Start the app:
+   `npm run dev`
+
+Current-location access works on `localhost` during development and requires HTTPS when deployed. The browser will ask the user for location permission.

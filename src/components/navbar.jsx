@@ -3,26 +3,22 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import FilterDramaTwoToneIcon from "@mui/icons-material/FilterDramaTwoTone";
 import GpsFixedRoundedIcon from "@mui/icons-material/GpsFixedRounded";
 
-const Navbar = ({ onSearch, currentCity }) => {
+const Navbar = ({ onSearch, onCurrentLocation, locationLoading }) => {
   const [searchCity, setSearchCity] = useState("");
-
-  const handleSearchClick = () => {
-    const trimmedCity = searchCity.trim();
-    if (trimmedCity) {
-      onSearch(trimmedCity);
-      setSearchCity("");
-    }
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    handleSearchClick();
+    const trimmedCity = searchCity.trim();
+    if (!trimmedCity) return;
+
+    onSearch(trimmedCity);
+    setSearchCity("");
   };
 
   return (
     <header className="topbar">
       <div className="brand-wrap" aria-label="Weather dashboard">
-        <span className="brand-icon">
+        <span className="brand-icon" aria-hidden="true">
           <FilterDramaTwoToneIcon />
         </span>
         <div className="brand-copy">
@@ -47,10 +43,16 @@ const Navbar = ({ onSearch, currentCity }) => {
         </button>
       </form>
 
-      <div className="location-chip" title={currentCity ? `Current weather: ${currentCity}` : "Current location"}>
+      <button
+        className="location-chip location-button"
+        type="button"
+        onClick={onCurrentLocation}
+        disabled={locationLoading}
+        aria-label="Get weather for current location"
+      >
         <GpsFixedRoundedIcon />
-        <span>Current Location</span>
-      </div>
+        <span>{locationLoading ? "Locating..." : "Current Location"}</span>
+      </button>
     </header>
   );
 };

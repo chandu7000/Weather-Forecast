@@ -253,8 +253,7 @@ button { cursor: pointer; }
 
 @media (max-width: 1120px) {
   .app-shell { width: min(100% - 32px, 1000px); }
-  .topbar { grid-template-columns: 1fr 1.6fr; }
-  .location-chip { display: none; }
+  .topbar { grid-template-columns: 1fr 1.6fr auto; }
   .dashboard-grid { grid-template-columns: minmax(300px, .78fr) minmax(0, 1.4fr); }
   .featured-highlights { grid-template-columns: 1fr; }
   .highlight-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -263,6 +262,7 @@ button { cursor: pointer; }
 @media (max-width: 820px) {
   .app-shell { width: min(100% - 24px, 720px); padding-top: 14px; }
   .topbar { grid-template-columns: 1fr; gap: 16px; padding: 10px 4px 20px; }
+  .location-chip { justify-self: stretch; justify-content: center; width: 100%; }
   .brand-subtitle { display: none; }
   .search-form { width: 100%; }
   .dashboard-grid { grid-template-columns: 1fr; }
@@ -316,4 +316,259 @@ button { cursor: pointer; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* ---------- Final Professional Data & Readability Polish ---------- */
+.section-kicker {
+  margin-bottom: 8px;
+  font-size: 11px;
+  letter-spacing: .12em;
+}
+.section-heading-row h2 { font-size: 22px; }
+.card-label { font-size: 10px; }
+.feature-card-title strong { font-size: 15px; }
+.forecast-location { font-size: 12px; }
+.wind-chip { font-size: 11px; padding: 10px 13px; }
+
+.weather-hero { padding: 29px; }
+.meta-row { font-size: 13px; }
+.meta-row svg { font-size: 18px; }
+.weather-description { font-size: 16px; }
+.hero-mini-stats span { font-size: 9px; }
+.hero-mini-stats strong { font-size: 12px; }
+
+.highlights-panel { padding: 30px; }
+.featured-highlights { grid-template-columns: minmax(0, 1.45fr) minmax(280px, .75fr); gap: 16px; margin-top: 20px; }
+.feature-card { min-height: 230px; padding: 22px; }
+.air-content-expanded { grid-template-columns: 62px minmax(0, 1fr); align-items: center; margin-top: 24px; }
+.air-values-expanded { grid-template-columns: repeat(4, minmax(72px, 1fr)); gap: 16px 12px; }
+.air-values span { font-size: 9px; }
+.air-values strong { font-size: 18px; }
+.air-values small { font-size: 8px; }
+.sun-time-item > div span { font-size: 9px; }
+.sun-time-item strong { font-size: 18px; }
+
+.highlight-grid-expanded { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
+.highlight-card { min-height: 142px; padding: 17px; }
+.highlight-card-head { font-size: 10px; }
+.highlight-value { margin-top: 19px; font-size: clamp(18px, 1.45vw, 23px); }
+.highlight-subtitle { margin-top: 7px; font-size: 8px; line-height: 1.35; }
+
+.forecast-section { padding: 26px; }
+.forecast-list { margin-top: 14px; }
+.forecast-row-enhanced {
+  grid-template-columns: 78px minmax(0, 1fr) 72px 56px;
+  gap: 12px;
+  min-height: 68px;
+}
+.forecast-day strong { font-size: 12px; }
+.forecast-day span { font-size: 10px; }
+.forecast-condition { font-size: 11px; gap: 5px; }
+.forecast-rain { display: flex; align-items: center; justify-content: flex-end; gap: 4px; color: #8fbfe9; font-size: 10px; font-weight: 800; white-space: nowrap; }
+.forecast-rain svg { font-size: 14px; }
+.forecast-temp-stack { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; white-space: nowrap; }
+.forecast-temp-stack strong { font-size: 16px; }
+.forecast-temp-stack span { color: #77879d; font-size: 10px; font-weight: 700; }
+
+@media (max-width: 1120px) {
+  .featured-highlights { grid-template-columns: 1fr; }
+  .air-values-expanded { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .highlight-grid-expanded { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 820px) {
+  .section-heading-row h2 { font-size: 21px; }
+  .featured-highlights { grid-template-columns: 1fr 1fr; }
+  .air-quality-card { grid-column: 1 / -1; }
+  .sun-card { grid-column: 1 / -1; }
+  .highlight-grid-expanded { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 620px) {
+  .section-kicker { font-size: 10px; }
+  .section-heading-row h2 { font-size: 20px; }
+  .featured-highlights { grid-template-columns: 1fr; }
+  .air-quality-card, .sun-card { grid-column: auto; }
+  .air-content-expanded { grid-template-columns: 1fr; }
+  .big-icon { display: none; }
+  .air-values-expanded { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px 8px; }
+  .highlight-grid-expanded { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .forecast-row-enhanced { grid-template-columns: 68px minmax(0, 1fr) 58px 46px; gap: 8px; }
+  .forecast-condition span { font-size: 10px; }
+  .forecast-rain { font-size: 9px; }
+}
+
+@media (max-width: 420px) {
+  .air-values-expanded { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .highlight-grid-expanded { grid-template-columns: 1fr; }
+  .highlight-card { min-height: 112px; }
+  .forecast-row-enhanced { grid-template-columns: 58px minmax(0, 1fr) 44px; }
+  .forecast-rain { display: none; }
+  .forecast-temp-stack { grid-column: 3; }
+  .forecast-condition img { width: 36px; height: 36px; }
+}
+
+
+/* Functional current-location control */
+.location-button {
+  appearance: none;
+  font: inherit;
+}
+.location-button:disabled {
+  cursor: wait;
+  opacity: .72;
+}
+
+/* ---------- Final Fit & Typography Pass ---------- */
+/* Let the highlights column size itself to its content instead of stretching
+   to the height of Current Weather + 5-Day Forecast. */
+.dashboard-grid {
+  align-items: start;
+}
+
+.highlights-panel {
+  min-height: 0;
+  height: auto;
+  align-self: start;
+  padding: 28px 30px 30px;
+}
+
+/* Stronger hierarchy for all small dashboard labels. */
+.section-kicker {
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.card-label {
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.feature-card-title strong {
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.highlight-card-head {
+  font-size: 12px;
+  line-height: 1.35;
+  color: #9aabc0;
+}
+
+.highlight-subtitle {
+  margin-top: 6px;
+  font-size: 9px;
+  line-height: 1.45;
+  color: #78899f;
+}
+
+.highlight-value {
+  margin-top: 21px;
+  font-size: clamp(19px, 1.45vw, 24px);
+}
+
+/* Reduce excess vertical height while retaining comfortable spacing. */
+.featured-highlights {
+  margin-top: 17px;
+  gap: 14px;
+}
+
+.feature-card {
+  min-height: 210px;
+  padding: 20px;
+}
+
+.air-content-expanded {
+  margin-top: 19px;
+}
+
+.highlight-grid-expanded {
+  gap: 12px;
+  margin-top: 13px;
+}
+
+.highlight-card {
+  min-height: 148px;
+  padding: 17px 16px;
+}
+
+.highlight-icon {
+  width: 34px;
+  height: 34px;
+}
+
+.highlight-icon svg {
+  font-size: 18px;
+}
+
+/* Forecast text should visually match the rest of the dashboard. */
+.forecast-location {
+  font-size: 12px;
+}
+
+.forecast-day strong {
+  font-size: 13px;
+}
+
+.forecast-day span {
+  font-size: 10px;
+}
+
+.forecast-condition {
+  font-size: 12px;
+}
+
+.forecast-rain {
+  font-size: 11px;
+}
+
+.forecast-temp-stack strong {
+  font-size: 17px;
+}
+
+.forecast-temp-stack span {
+  font-size: 10px;
+}
+
+/* Skeleton should mirror the content-driven layout too. */
+.skeleton-highlights {
+  min-height: 560px;
+}
+
+@media (max-width: 1120px) {
+  .highlights-panel {
+    padding: 25px;
+  }
+  .highlight-card-head { font-size: 11px; }
+  .highlight-card { min-height: 132px; }
+}
+
+@media (max-width: 820px) {
+  .highlights-panel {
+    width: 100%;
+  }
+  .feature-card {
+    min-height: 200px;
+  }
+}
+
+@media (max-width: 620px) {
+  .highlights-panel {
+    padding: 21px;
+  }
+  .section-kicker { font-size: 10px; }
+  .card-label { font-size: 10px; }
+  .feature-card-title strong { font-size: 15px; }
+  .highlight-card-head { font-size: 11px; }
+  .highlight-subtitle { font-size: 9px; }
+  .highlight-card { min-height: 116px; }
+}
+
+@media (max-width: 420px) {
+  .highlight-card {
+    min-height: 108px;
+  }
+  .highlight-value {
+    margin-top: 12px;
+  }
 }

@@ -1,3 +1,5 @@
+import WaterDropRoundedIcon from "@mui/icons-material/WaterDropRounded";
+
 const getDailyForecasts = (list = []) => {
   const byDate = new Map();
 
@@ -35,7 +37,7 @@ const FiveDayForecast = ({ forecastData }) => {
     <section className="forecast-section glass-card">
       <div className="section-heading-row">
         <div>
-          <span className="section-kicker">Next days</span>
+          <span className="section-kicker">Next Days</span>
           <h2>5-Day Forecast</h2>
         </div>
         <span className="forecast-location">{forecastData?.city?.name}</span>
@@ -44,8 +46,9 @@ const FiveDayForecast = ({ forecastData }) => {
       <div className="forecast-list">
         {dailyForecasts.map((item, index) => {
           const iconCode = item.weather?.[0]?.icon;
+          const rainChance = Math.round((item.pop || 0) * 100);
           return (
-            <article className="forecast-row" key={item.dt}>
+            <article className="forecast-row forecast-row-enhanced" key={item.dt}>
               <div className="forecast-day">
                 <strong>{formatDay(item.dt_txt, index)}</strong>
                 <span>{formatDate(item.dt_txt)}</span>
@@ -61,8 +64,14 @@ const FiveDayForecast = ({ forecastData }) => {
                 <span>{item.weather?.[0]?.description}</span>
               </div>
 
-              <div className="forecast-temp">
-                {Math.round(item.main.temp)}°
+              <div className="forecast-rain" title="Precipitation probability">
+                <WaterDropRoundedIcon />
+                <span>{rainChance}%</span>
+              </div>
+
+              <div className="forecast-temp-stack">
+                <strong>{Math.round(item.main.temp_max)}°</strong>
+                <span>{Math.round(item.main.temp_min)}°</span>
               </div>
             </article>
           );
